@@ -1,12 +1,42 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.endpoints import documents, healthcheck, research
-from app.core.config import settings
+from app.core.config import logger, settings
+from app.managers.correlation_filter import CorrelationFilterManager
+from app.managers.language import LanguageManager
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan function to load models and initialize managers on startup.
+    """
+    # Load models and initialize managers on startup
+    logger.info("Loading models and initializing managers...")
+
+    # Initialize language manager (loads FastText model)
+    language_manager = LanguageManager()
+    app.state.language_manager = language_manager
+
+    # Initialize correlation filter manager (initializes OpenAI client)
+    correlation_manager = CorrelationFilterManager()
+    app.state.correlation_manager = correlation_manager
+
+    logger.info("Models loaded successfully!")
+
+    yield
+
+    # Cleanup on shutdown (if needed)
+    logger.info("Shutting down...")
+
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
+    lifespan=lifespan,
 )
 
 # Add CORS middleware

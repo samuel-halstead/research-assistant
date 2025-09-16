@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 
 from app.api.dependencies import ManagerFactory
 from app.business.research import ResearchManager
@@ -13,18 +13,20 @@ router = APIRouter(prefix="/research", tags=["Research"])
     status_code=status.HTTP_200_OK,
 )
 async def research(
-    request: ResearchRequest,
+    payload: ResearchRequest,
+    request: Request,
     manager: ResearchManager = Depends(ManagerFactory.for_research),
 ) -> ResearchResponse:
     """
     Research should response status OK and 200 HTTP Response Code.
 
     Args:
-        request(ResearchRequest): The request containing the query.
+        payload(ResearchRequest): The payload containing the query.
+        request(Request): The request object.
         manager(ResearchManager): The manager (domain) with the business logic.
 
     Returns:
         (json): message OK
     """
 
-    return manager.research(request)
+    return manager.research(payload, request)

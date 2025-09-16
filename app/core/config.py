@@ -34,7 +34,7 @@ class Settings(BaseSettings):
 
     # General
     DATABASE_PATH: Path = Field(default=Path("./data/llama.db"), description="Path to the database file.")
-    MODELS_PATH: Path = Field(default=Path("./models/"), description="Path to the models directory.")
+    MODELS_PATH: Path = Field(default=Path("./app/models/"), description="Path to the models directory.")
 
     # Embeddings model
     EMBED_MODEL_NAME: str = Field(default="BAAI/bge-small-en", description="Name of the embedding model.")

@@ -166,3 +166,7 @@ cython_debug/
 # Chromadb
 data/llama.db
 .data
+
+
+# Models
+app/models/*.ftz
