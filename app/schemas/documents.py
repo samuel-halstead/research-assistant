@@ -1,8 +1,11 @@
-from pydantic import BaseModel
+import uuid
+from typing import Optional
+
+from pydantic import BaseModel, Field
 
 
 class Document(BaseModel):
-    id: int
+    uuid: Optional[str] = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
     abstract: str
     authors: list[str]

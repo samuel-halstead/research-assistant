@@ -34,10 +34,11 @@ class Settings(BaseSettings):
 
     # General
     DATABASE_PATH: Path = Field(default=Path("./data/llama.db"), description="Path to the database file.")
+    COLLECTION_NAME: str = Field(default="research-assistant", description="Name of the collection.")
     MODELS_PATH: Path = Field(default=Path("./app/models/"), description="Path to the models directory.")
 
     # Embeddings model
-    EMBED_MODEL_NAME: str = Field(default="BAAI/bge-small-en", description="Name of the embedding model.")
+    EMBED_MODEL_NAME: str = Field(default="text-embedding-3-large", description="Name of the embedding model.")
 
     # OpenAI model
     OPENAI_GENERATOR_MODEL: str = Field(

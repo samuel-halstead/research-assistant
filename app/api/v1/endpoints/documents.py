@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Request, status
 
 from app.api.dependencies import ManagerFactory
 from app.business.documents import DocumentsManager
@@ -13,6 +13,7 @@ router = APIRouter(prefix="/documents", tags=["Documents"])
     status_code=status.HTTP_200_OK,
 )
 async def get_documents(
+    request: Request,
     manager: DocumentsManager = Depends(ManagerFactory.for_documents),
 ) -> DocumentsResponse:
     """
@@ -25,7 +26,7 @@ async def get_documents(
         (json): Documents
     """
 
-    return manager.get_documents()
+    return manager.get_documents(request)
 
 
 @router.get(
@@ -33,21 +34,22 @@ async def get_documents(
     response_model=Document,
     status_code=status.HTTP_200_OK,
 )
-async def get_document_by_id(
-    document_id: int,
+async def get_document_by_uuid(
+    document_uuid: str,
+    request: Request,
     manager: DocumentsManager = Depends(ManagerFactory.for_documents),
 ) -> Document:
     """
     Get the document from the database by id.
 
     Args:
-        document_id(int): The id of the document.
+        document_uuid(str): The uuid of the document.
         manager(DocumentsManager): The manager (domain) with the business logic.
 
     Returns:
         (json): Document
     """
-    return manager.get_document_by_id(document_id)
+    return manager.get_document_by_uuid(document_uuid, request)
 
 
 @router.post(
@@ -56,20 +58,21 @@ async def get_document_by_id(
     status_code=status.HTTP_200_OK,
 )
 async def create_document(
-    document: Document,
+    payload: Document,
+    request: Request,
     manager: DocumentsManager = Depends(ManagerFactory.for_documents),
 ) -> Document:
     """
     Create a new document.
 
     Args:
-        document(Document): The document to create.
+        payload(Document): The document to create.
         manager(DocumentsManager): The manager (domain) with the business logic.
 
     Returns:
         (json): Document
     """
-    return manager.create_document(document)
+    return manager.create_document(payload, request)
 
 
 @router.delete(
@@ -78,17 +81,18 @@ async def create_document(
     status_code=status.HTTP_200_OK,
 )
 async def delete_document(
-    document_id: int,
+    document_uuid: str,
+    request: Request,
     manager: DocumentsManager = Depends(ManagerFactory.for_documents),
 ) -> None:
     """
     Delete a document.
 
     Args:
-        document_id(int): The id of the document.
+        document_uuid(str): The uuid of the document.
         manager(DocumentsManager): The manager (domain) with the business logic.
 
     Returns:
         (json): None
     """
-    return manager.delete_document(document_id)
+    return manager.delete_document(document_uuid, request)
