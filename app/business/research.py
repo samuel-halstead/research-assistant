@@ -1,5 +1,6 @@
 from fastapi import Request
 
+from app.managers.correlation import correlation_filter_manager
 from app.schemas.research import ResearchRequest, ResearchResponse
 
 
@@ -27,8 +28,16 @@ class ResearchManager:
         # Get the relevant documents
         relevant_documents = request.app.state.retriever.retrieve_nodes(payload.query)
 
+        # Check if the documents are relevant
+        relevant_documents = correlation_filter_manager.check_correlation(payload.query, relevant_documents)
+
+        # Check if there are relevant documents
+        are_relevant_documents = len(relevant_documents) > 0
+        if not are_relevant_documents:
+            return ResearchResponse(are_relevant_documents=are_relevant_documents)
+
         return ResearchResponse(
-            are_relevant_documents=True,
+            are_relevant_documents=are_relevant_documents,
             documents=relevant_documents,
             summary=summary,
         )
