@@ -10,6 +10,7 @@ from app.managers.correlation import CorrelationFilterManager
 from app.managers.embedding import EmbeddingManager
 from app.managers.language import LanguageManager
 from app.managers.retriever import VectorDBRetriever
+from app.managers.translator import TranslatorManager
 from app.managers.vector_store import VectorStoreManager
 
 
@@ -46,6 +47,10 @@ async def lifespan(app: FastAPI):
     # Comparison manager
     comparison_manager = ComparisonManager()
     app.state.comparison_manager = comparison_manager
+
+    # Translator manager
+    translator_manager = TranslatorManager()
+    app.state.translator_manager = translator_manager
 
     logger.info("Models loaded successfully!")
 

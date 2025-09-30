@@ -11,6 +11,7 @@ class ResearchRequest(BaseModel):
 
 class ResearchResponseDocument(Document):
     similarity: float
+    language: Optional[str] = Field(default=None)
 
 
 class ResearchResponse(BaseModel):

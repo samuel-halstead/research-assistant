@@ -10,6 +10,3 @@ class LanguageManager:
     def detect_language(self, query: str) -> str:
         prediction = self.model.predict(query, k=1)
         return settings.FASTTEXT_LANGUAGES_MAP[prediction[0][0].replace("__label__", "")]
-
-
-language_manager = LanguageManager()

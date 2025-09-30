@@ -66,7 +66,3 @@ class CorrelationFilterManager:
 
         # 6. Retornar documentos que no están en la lista de filtros
         return [doc for index, doc in enumerate(retrieved_docs) if index not in filter_indexes]
-
-
-# Singleton
-correlation_filter_manager = CorrelationFilterManager()

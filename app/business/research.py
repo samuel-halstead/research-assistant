@@ -39,8 +39,15 @@ class ResearchManager:
             payload.query, relevant_documents, detected_language
         )
 
+        # Translate the documents
+        translated_documents = []
+        for doc in relevant_documents:
+            doc.language = request.app.state.language_manager.detect_language(doc.title)
+            translated_doc = request.app.state.translator_manager.translate_document(doc, detected_language)
+            translated_documents.append(translated_doc)
+
         return ResearchResponse(
             are_relevant_documents=are_relevant_documents,
-            documents=relevant_documents,
+            documents=translated_documents,
             comparison=comparison,
         )
