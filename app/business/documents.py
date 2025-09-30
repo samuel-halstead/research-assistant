@@ -29,9 +29,6 @@ class DocumentsManager:
         """
         Get the document from the database by id.
 
-        Args:
-            document_uuid(str): The uuid of the document.
-
         Returns:
             A valid Document instance with the document.
         """
@@ -46,9 +43,6 @@ class DocumentsManager:
         """
         Create a new document.
 
-        Args:
-            document(Document): The document to create.
-
         Returns:
             A valid Document instance with the created document.
         """
@@ -61,9 +55,6 @@ class DocumentsManager:
     def delete_document(document_uuid: str, request: Request) -> None:
         """
         Delete a document.
-
-        Args:
-            document_uuid(str): The uuid of the document.
 
         Returns:
             None

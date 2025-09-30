@@ -19,11 +19,8 @@ async def get_documents(
     """
     Get the documents from the database.
 
-    Args:
-        manager(DocumentsManager): The manager (domain) with the business logic.
-
     Returns:
-        (json): Documents
+        A DocumentsResponse instance with all documents.
     """
 
     return manager.get_documents(request)
@@ -42,12 +39,8 @@ async def get_document_by_uuid(
     """
     Get the document from the database by id.
 
-    Args:
-        document_uuid(str): The uuid of the document.
-        manager(DocumentsManager): The manager (domain) with the business logic.
-
     Returns:
-        (json): Document
+        A Document instance with the specified UUID.
     """
     return manager.get_document_by_uuid(document_uuid, request)
 
@@ -65,12 +58,8 @@ async def create_document(
     """
     Create a new document.
 
-    Args:
-        payload(Document): The document to create.
-        manager(DocumentsManager): The manager (domain) with the business logic.
-
     Returns:
-        (json): Document
+        A Document instance with the created document.
     """
     return manager.create_document(payload, request)
 
@@ -88,11 +77,7 @@ async def delete_document(
     """
     Delete a document.
 
-    Args:
-        document_uuid(str): The uuid of the document.
-        manager(DocumentsManager): The manager (domain) with the business logic.
-
     Returns:
-        (json): None
+        None
     """
     return manager.delete_document(document_uuid, request)

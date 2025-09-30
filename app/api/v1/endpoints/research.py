@@ -18,15 +18,10 @@ async def research(
     manager: ResearchManager = Depends(ManagerFactory.for_research),
 ) -> ResearchResponse:
     """
-    Research should response status OK and 200 HTTP Response Code.
-
-    Args:
-        payload(ResearchRequest): The payload containing the query.
-        request(Request): The request object.
-        manager(ResearchManager): The manager (domain) with the business logic.
+    Research the query and return relevant documents and summary.
 
     Returns:
-        (json): message OK
+        A ResearchResponse instance with relevant documents and summary.
     """
 
     return manager.research(payload, request)

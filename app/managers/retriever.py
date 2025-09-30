@@ -1,11 +1,3 @@
-"""
-Módulo: retriever.py
-
-Módulo que implementa una clase para la recuperación de documentos relevantes a partir de
-un almacén vectorial, utilizando un modelo de incrustaciones para consultas.
-Proporciona funcionalidad para integrar recuperación basada en similitud con LangChain.
-"""
-
 from typing import List
 
 from langchain_core.documents import Document as LangchainDocument
@@ -24,12 +16,30 @@ class VectorDBRetriever(BaseRetriever):
         super().__init__(vector_store=vector_store, k=k, **kwargs)
 
     def _get_relevant_documents(self, query: str) -> List[LangchainDocument]:
+        """
+        Retrieve relevant documents from the vector store.
+
+        Returns:
+            A list of LangchainDocument instances matching the query.
+        """
         return self.vector_store.similarity_search(query, k=self.k)
 
     def _get_relevant_documents_with_score(self, query: str) -> List[tuple[LangchainDocument, float]]:
+        """
+        Retrieve relevant documents with similarity scores from the vector store.
+
+        Returns:
+            A list of tuples containing LangchainDocument instances and their similarity scores.
+        """
         return self.vector_store.similarity_search_with_score(query, k=self.k)
 
     def retrieve_nodes(self, query: str) -> List[ResearchResponseDocument]:
+        """
+        Retrieve relevant documents and convert them to ResearchResponseDocument format.
+
+        Returns:
+            A list of ResearchResponseDocument instances with similarity scores.
+        """
         # Get documents with scores
         docs_with_scores = self._get_relevant_documents_with_score(query)
 

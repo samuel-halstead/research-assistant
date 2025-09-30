@@ -16,6 +16,12 @@ class ComparisonManager:
 
     @staticmethod
     def _build_summary_prompt(query_str: str, docs: List[ResearchResponseDocument]) -> str:
+        """
+        Build a prompt for document comparison analysis.
+
+        Returns:
+            A formatted prompt string for comparison analysis.
+        """
         doc_descriptions = "\n".join(
             f"Index {index+1}: Title: '{doc.title}'\nAbstract: {doc.abstract}" for index, doc in enumerate(docs)
         )
@@ -24,10 +30,16 @@ class ComparisonManager:
         return prompt
 
     def get_comparison(self, query_str: str, docs: List[ResearchResponseDocument], language: str) -> Comparison:
-        # 1. Construir el prompt
+        """
+        Get a comparison analysis between the query and retrieved documents.
+
+        Returns:
+            A Comparison instance with the analysis results.
+        """
+        # 1. Build the prompt
         prompt_text = self._build_summary_prompt(query_str, docs)
 
-        # 2. Definir el prompt template para LangChain
+        # 2. Define the prompt template for LangChain
         system_content = (
             "You are a specialized AI assistant focused on research analysis and comparison.\n"
             "You have received a user query and a list of documents (with indexes starting at 1). "
@@ -43,12 +55,12 @@ class ComparisonManager:
             f"5. You must respond in {language} language.\n"
         )
 
-        # 3. Crear el prompt template
+        # 3. Create the prompt template
         prompt_template = ChatPromptTemplate.from_messages(
             [("system", system_content), ("user", "{prompt_text}"), ("system", user_instructions)]
         )
 
-        # 4. Ejecutar la cadena con structured output
+        # 4. Execute the chain with structured output
         chain = prompt_template | self.llm
         response = chain.invoke({"prompt_text": prompt_text})
 

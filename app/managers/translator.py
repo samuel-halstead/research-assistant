@@ -14,14 +14,26 @@ class TranslatorManager:
 
     @staticmethod
     def _build_translation_prompt(doc: ResearchResponseDocument) -> str:
+        """
+        Build a prompt for document translation.
+
+        Returns:
+            A formatted prompt string for document translation.
+        """
         prompt = f"Title: '{doc.title}'\nAbstract: {doc.abstract}\n\n"
         return prompt
 
     def translate_document(self, doc: ResearchResponseDocument, target_language: str) -> ResearchResponseDocument:
-        # 1. Construir el prompt
+        """
+        Translate a document to the specified target language.
+
+        Returns:
+            A ResearchResponseDocument instance with translated title and abstract.
+        """
+        # 1. Build the prompt
         prompt_text = self._build_translation_prompt(doc)
 
-        # 2. Definir el prompt template para LangChain
+        # 2. Define the prompt template for LangChain
         system_content = (
             "You are a specialized AI assistant focused on document translation.\n"
             "You have received a document with a title and abstract. "
@@ -37,16 +49,16 @@ class TranslatorManager:
             f"5. Translate to {target_language} language.\n"
         )
 
-        # 3. Crear el prompt template
+        # 3. Create the prompt template
         prompt_template = ChatPromptTemplate.from_messages(
             [("system", system_content), ("user", "{prompt_text}"), ("system", user_instructions)]
         )
 
-        # 4. Ejecutar la cadena con structured output
+        # 4. Execute the chain with structured output
         chain = prompt_template | self.llm
         response = chain.invoke({"prompt_text": prompt_text})
 
-        # 5. Crear un nuevo documento con las traducciones
+        # 5. Create a new document with the translations
         translated_doc = ResearchResponseDocument(
             uuid=doc.uuid,
             title=response.translated_title,

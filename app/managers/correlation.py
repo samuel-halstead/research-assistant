@@ -16,6 +16,12 @@ class CorrelationFilterManager:
 
     @staticmethod
     def _build_correlation_prompt(query_str: str, retrieved_docs: List[ResearchResponseDocument]) -> str:
+        """
+        Build a prompt for correlation analysis.
+
+        Returns:
+            A formatted prompt string for correlation analysis.
+        """
         doc_descriptions = "\n".join(
             f"Index {index+1}: Title: '{doc.title}'\nAbstract: {doc.abstract}"
             for index, doc in enumerate(retrieved_docs)
@@ -27,10 +33,16 @@ class CorrelationFilterManager:
     def check_correlation(
         self, query_str: str, retrieved_docs: List[ResearchResponseDocument]
     ) -> List[ResearchResponseDocument]:
-        # 1. Construir el prompt
+        """
+        Check correlation between query and retrieved documents, filtering out irrelevant ones.
+
+        Returns:
+            A list of ResearchResponseDocument instances that are relevant to the query.
+        """
+        # 1. Build the prompt
         prompt_text = self._build_correlation_prompt(query_str, retrieved_docs)
 
-        # 2. Definir el prompt template para LangChain
+        # 2. Define the prompt template for LangChain
         system_content = (
             "You are a specialized AI assistant focused on research analysis and comparison.\n"
             "You have received a user query and a list of documents (with indexes starting at 1). "
@@ -50,19 +62,19 @@ class CorrelationFilterManager:
             "4. Be conservative - only mark documents as irrelevant if they are clearly off-topic.\n"
         )
 
-        # 3. Crear el prompt template
+        # 3. Create the prompt template
         prompt_template = ChatPromptTemplate.from_messages(
             [("system", system_content), ("user", "{prompt_text}"), ("system", user_instructions)]
         )
 
-        # 4. Ejecutar la cadena con structured output
+        # 4. Execute the chain with structured output
         chain = prompt_template | self.llm
         response = chain.invoke({"prompt_text": prompt_text})
 
-        # 5. Procesar la respuesta
+        # 5. Process the response
         filter_indexes = response.indexes
-        # Convertir de 1-based a 0-based indexing y filtrar índices válidos
+        # Convert from 1-based to 0-based indexing and filter valid indices
         filter_indexes = [index - 1 for index in filter_indexes if 1 <= index <= len(retrieved_docs)]
 
-        # 6. Retornar documentos que no están en la lista de filtros
+        # 6. Return documents that are not in the filter list
         return [doc for index, doc in enumerate(retrieved_docs) if index not in filter_indexes]

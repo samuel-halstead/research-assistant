@@ -16,8 +16,7 @@ class ManagerFactory:
     @staticmethod
     def for_healthchecks() -> HealthcheckManager:
         """
-        Build an instance of HealthcheckManager to inject
-        as a dependency in the endpoints.
+        Build an instance of HealthcheckManager to inject as a dependency in the endpoints.
 
         Returns:
             An instance of HealthcheckManager.
@@ -30,8 +29,7 @@ class ManagerFactory:
         token: str = Depends(APIKeyHeader(name=settings.AUTH_HEADER_KEY)),
     ) -> ResearchManager:
         """
-        Build an instance of ResearchManager to inject
-        as a dependency in the endpoints.
+        Build an instance of ResearchManager to inject as a dependency in the endpoints.
 
         Returns:
             An instance of ResearchManager.
@@ -47,8 +45,7 @@ class ManagerFactory:
         token: str = Depends(APIKeyHeader(name=settings.AUTH_HEADER_KEY)),
     ) -> DocumentsManager:
         """
-        Build an instance of DocumentsManager to inject
-        as a dependency in the endpoints.
+        Build an instance of DocumentsManager to inject as a dependency in the endpoints.
 
         Returns:
             An instance of DocumentsManager.

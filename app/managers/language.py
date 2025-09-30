@@ -8,5 +8,11 @@ class LanguageManager:
         self.model = ft.load_model(str(settings.MODELS_PATH / settings.FASTTEXT_MODEL))
 
     def detect_language(self, query: str) -> str:
+        """
+        Detect the language of the given text.
+
+        Returns:
+            The detected language name.
+        """
         prediction = self.model.predict(query, k=1)
         return settings.FASTTEXT_LANGUAGES_MAP[prediction[0][0].replace("__label__", "")]

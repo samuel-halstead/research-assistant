@@ -16,13 +16,10 @@ async def healthcheck(
     manager: HealthcheckManager = Depends(ManagerFactory.for_healthchecks),
 ) -> HealthcheckStatus:
     """
-    Healthcheck should response status OK and 200 HTTP Response Code.
-
-    Args:
-        manager(HealthcheckManager): The manager (domain) with the business logic.
+    Check if the backend is up and running properly.
 
     Returns:
-        (json): message OK
+        A HealthcheckStatus instance with the service status.
     """
 
     return manager.status()
