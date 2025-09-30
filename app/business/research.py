@@ -15,7 +15,7 @@ class ResearchManager:
         Research the query and return the relevant documents and summary.
 
         Returns:
-            A valid ResearchResponse instance with a -forced- healthy status.
+            A valid ResearchResponse instance with the relevant documents and summary.
         """
 
         # Detect the language of the query
@@ -24,8 +24,11 @@ class ResearchManager:
         # Create a summary that includes the detected language
         summary = f"Query: '{payload.query}'\nDetected Language: {detected_language}"
 
+        # Get the relevant documents
+        relevant_documents = request.app.state.retriever.retrieve_nodes(payload.query)
+
         return ResearchResponse(
             are_relevant_documents=True,
-            documents=[],
+            documents=relevant_documents,
             summary=summary,
         )

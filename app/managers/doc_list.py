@@ -8,7 +8,12 @@ class DocListManager:
     def build_doc_list_response(self, nodes_with_scores) -> list[DocListResponse]:
         doc_list = []
         for i, nws in enumerate(nodes_with_scores):
-            metadata = nws.node.metadata or {}
+            # Handle both LangChain documents and LlamaIndex nodes
+            if hasattr(nws.node, "metadata"):
+                metadata = nws.node.metadata or {}
+            else:
+                metadata = getattr(nws.node, "metadata", {}) or {}
+
             doc_score = nws.score if nws.score else 0
             doc_list.append(
                 DocListResponse(

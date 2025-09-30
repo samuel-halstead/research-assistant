@@ -2,14 +2,15 @@ from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
+from app.schemas.documents import Document
+
 
 class ResearchRequest(BaseModel):
     query: str
 
 
-class ResearchResponseDocument(BaseModel):
-    index: int
-    abstract: str
+class ResearchResponseDocument(Document):
+    similarity: float
 
 
 class ResearchResponse(BaseModel):

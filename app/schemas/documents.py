@@ -1,7 +1,7 @@
 import uuid
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class Document(BaseModel):
@@ -9,6 +9,12 @@ class Document(BaseModel):
     title: str
     abstract: str
     authors: list[str]
+
+    @field_validator("authors", mode="before")
+    def split_authors(cls, v):
+        if isinstance(v, str):
+            return [author.strip() for author in v.split(";")]
+        return v
 
 
 class DocumentsResponse(BaseModel):

@@ -22,10 +22,6 @@ class VectorStoreManager:
         for doc in documents:
             # Convert metadata to ChromaDB-compatible format
             metadata = doc.model_dump()
-            # Convert list fields to strings
-            if "authors" in metadata and isinstance(metadata["authors"], list):
-                metadata["authors"] = "; ".join(metadata["authors"])
-
             langchain_documents.append(LangchainDocument(page_content=doc.abstract, metadata=metadata))
 
         uuids = [doc.uuid for doc in documents]
@@ -34,9 +30,6 @@ class VectorStoreManager:
     def get_document_by_uuid(self, uuid: str) -> Document:
         document = self.vector_store.get(ids=[uuid])
         metadata = document["metadatas"][0]
-        # Convert authors string back to list
-        if "authors" in metadata and isinstance(metadata["authors"], str):
-            metadata["authors"] = [author.strip() for author in metadata["authors"].split(";")]
         return Document(**metadata)
 
     def get_documents(self, uuids: list[str] = None) -> list[Document]:
@@ -44,18 +37,12 @@ class VectorStoreManager:
             documents = self.vector_store.get()
             result = []
             for metadata in documents["metadatas"]:
-                # Convert authors string back to list
-                if "authors" in metadata and isinstance(metadata["authors"], str):
-                    metadata["authors"] = [author.strip() for author in metadata["authors"].split(";")]
                 result.append(Document(**metadata))
             return result
         else:
             documents = self.vector_store.get(ids=uuids)
             result = []
             for metadata in documents["metadatas"]:
-                # Convert authors string back to list
-                if "authors" in metadata and isinstance(metadata["authors"], str):
-                    metadata["authors"] = [author.strip() for author in metadata["authors"].split(";")]
                 result.append(Document(**metadata))
             return result
 

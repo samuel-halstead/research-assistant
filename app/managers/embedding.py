@@ -9,3 +9,7 @@ class EmbeddingManager:
 
     def get_embedding_model(self) -> list[float]:
         return self.embedding_model
+
+
+# Singleton
+embedding_manager = EmbeddingManager()

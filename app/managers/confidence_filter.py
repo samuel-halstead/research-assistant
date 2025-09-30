@@ -1,5 +1,3 @@
-from llama_index.core import QueryBundle
-
 from app.core.config import settings
 from app.managers.doc_list import doc_list_manager
 
@@ -8,7 +6,7 @@ class ConfidenceFilterManager:
     def __init__(self, retriever):
         self.retriever = retriever
 
-    def query_with_confidence(self, query_str: str) -> str:
+    def query_with_confidence(self, query_str: str) -> list:
         """
         Realiza una query utilizando un umbral de confianza.
 
@@ -30,8 +28,7 @@ class ConfidenceFilterManager:
         """
 
         # Retrieve the nodes (directly from the retriever)
-        query_bundle = QueryBundle(query_str)
-        retrieved_nodes_with_scores = self.retriever.retrieve_nodes(query_bundle)
+        retrieved_nodes_with_scores = self.retriever.retrieve_nodes(query_str)
 
         # Get documents for the top k nodes
         retrieved_docs = doc_list_manager.build_doc_list_response(retrieved_nodes_with_scores)
