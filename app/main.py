@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.endpoints import documents, healthcheck, research
 from app.core.config import logger, settings
-from app.managers.embedding import embedding_manager
+from app.managers.comparison import ComparisonManager
+from app.managers.correlation import CorrelationFilterManager
+from app.managers.embedding import EmbeddingManager
 from app.managers.language import LanguageManager
 from app.managers.retriever import VectorDBRetriever
 from app.managers.vector_store import VectorStoreManager
@@ -24,7 +26,9 @@ async def lifespan(app: FastAPI):
     app.state.language_manager = language_manager
 
     # Initialize correlation filter manager (initializes OpenAI client)
+    embedding_manager = EmbeddingManager()
     embedding_model = embedding_manager.get_embedding_model()
+    app.state.embedding_model = embedding_model
 
     # Vector store manager
     vector_store_manager = VectorStoreManager(embedding_model)
@@ -34,6 +38,14 @@ async def lifespan(app: FastAPI):
     vector_store = vector_store_manager.get_vector_store()
     retriever = VectorDBRetriever(vector_store=vector_store, k=settings.DOCUMENT_TOP_K)
     app.state.retriever = retriever
+
+    # Correlation filter manager
+    correlation_filter_manager = CorrelationFilterManager()
+    app.state.correlation_filter_manager = correlation_filter_manager
+
+    # Comparison manager
+    comparison_manager = ComparisonManager()
+    app.state.comparison_manager = comparison_manager
 
     logger.info("Models loaded successfully!")
 

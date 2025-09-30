@@ -16,4 +16,4 @@ class ResearchResponseDocument(Document):
 class ResearchResponse(BaseModel):
     are_relevant_documents: bool
     documents: Optional[List[ResearchResponseDocument]] = Field(default=None)
-    summary: Optional[str] = Field(default=None)
+    comparison: Optional[str] = Field(default=None)

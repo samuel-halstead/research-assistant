@@ -17,20 +17,6 @@ from app.schemas.research import ResearchResponseDocument
 
 
 class VectorDBRetriever(BaseRetriever):
-    """
-    Recuperador de documentos basado en un almacén vectorial usando LangChain.
-
-    Esta clase utiliza un almacén vectorial de LangChain para realizar búsquedas
-    de similitud y devuelve documentos relevantes con sus puntuaciones.
-
-    Parámetros:
-    -----------
-    vector_store : VectorStore
-        Instancia del almacén vectorial de LangChain donde se encuentran los datos.
-    k : int, opcional
-        Número máximo de documentos devueltos por la consulta (por defecto, 5).
-    """
-
     vector_store: VectorStore = Field(description="Vector store instance")
     k: int = Field(default=5, description="Number of documents to retrieve")
 
@@ -38,55 +24,12 @@ class VectorDBRetriever(BaseRetriever):
         super().__init__(vector_store=vector_store, k=k, **kwargs)
 
     def _get_relevant_documents(self, query: str) -> List[LangchainDocument]:
-        """
-        Recupera documentos relevantes basados en una consulta.
-
-        Parámetros:
-        -----------
-        query : str
-            La cadena de consulta.
-
-        Devuelve:
-        --------
-        List[LangchainDocument]
-            Una lista de documentos relevantes.
-        """
         return self.vector_store.similarity_search(query, k=self.k)
 
     def _get_relevant_documents_with_score(self, query: str) -> List[tuple[LangchainDocument, float]]:
-        """
-        Recupera documentos relevantes con sus puntuaciones de similitud.
-
-        Parámetros:
-        -----------
-        query : str
-            La cadena de consulta.
-
-        Devuelve:
-        --------
-        List[tuple[LangchainDocument, float]]
-            Una lista de tuplas (documento, puntuación).
-        """
         return self.vector_store.similarity_search_with_score(query, k=self.k)
 
     def retrieve_nodes(self, query: str) -> List[ResearchResponseDocument]:
-        """
-        Recupera nodos relevantes basados en una consulta (compatibilidad con LlamaIndex).
-
-        Este método mantiene la compatibilidad con la interfaz de LlamaIndex
-        esperada por ConfidenceFilterManager.
-
-        Parámetros:
-        -----------
-        query : str
-            La cadena de consulta.
-
-        Devuelve:
-        --------
-        List[ResearchResponseDocument]
-            Una lista de nodos con sus respectivas puntuaciones de similitud.
-        """
-
         # Get documents with scores
         docs_with_scores = self._get_relevant_documents_with_score(query)
 

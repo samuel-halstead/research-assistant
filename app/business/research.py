@@ -1,6 +1,5 @@
 from fastapi import Request
 
-from app.managers.correlation import correlation_filter_manager
 from app.schemas.research import ResearchRequest, ResearchResponse
 
 
@@ -22,22 +21,26 @@ class ResearchManager:
         # Detect the language of the query
         detected_language = request.app.state.language_manager.detect_language(payload.query)
 
-        # Create a summary that includes the detected language
-        summary = f"Query: '{payload.query}'\nDetected Language: {detected_language}"
-
         # Get the relevant documents
         relevant_documents = request.app.state.retriever.retrieve_nodes(payload.query)
 
         # Check if the documents are relevant
-        relevant_documents = correlation_filter_manager.check_correlation(payload.query, relevant_documents)
+        relevant_documents = request.app.state.correlation_filter_manager.check_correlation(
+            payload.query, relevant_documents
+        )
 
         # Check if there are relevant documents
         are_relevant_documents = len(relevant_documents) > 0
         if not are_relevant_documents:
             return ResearchResponse(are_relevant_documents=are_relevant_documents)
 
+        # Get the comparison
+        comparison = request.app.state.comparison_manager.get_comparison(
+            payload.query, relevant_documents, detected_language
+        )
+
         return ResearchResponse(
             are_relevant_documents=are_relevant_documents,
             documents=relevant_documents,
-            summary=summary,
+            comparison=comparison,
         )
